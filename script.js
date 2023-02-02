@@ -57,10 +57,6 @@ function handleMessage(event) {
     if (event.data.callbackType === 'Error') {
         $('#message-box').text(data);
     }
-
-    if (event.data.callbackType === 'ShadingValues') {
-        $('#message-box').text(JSON.stringify(event.data.data));
-    }
 }
 
 /**
