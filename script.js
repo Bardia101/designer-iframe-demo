@@ -101,3 +101,70 @@ function createProposal() {
         console.log(err);
     }
 }
+
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+});
+
+/**
+ * This function is used to start an automatic solar design process in the iframe window.
+ */
+async function generate() {
+    const coordinates = $('#coordinates').val();
+    const usage = Number($('#usage').val());
+    const resolution = Number($('#resolution').val());
+	const rgbFile = document.getElementById('fileRGB');
+	const dsmFile = document.getElementById('fileDSM');
+	const rgbData = rgbFile.files.length ? await toBase64(rgbFile.files[0]) : "";
+	const dsmData = dsmFile.files.length ? await toBase64(dsmFile.files[0]) : "";
+
+    try {
+        sendMessage({
+            cmd: 'generate',
+            params: {
+                coordinates, 
+                electricity_usage: usage,
+				rgb: rgbData,
+				dsm: dsmData,
+				resolution,
+				type: 'Manual',
+            },
+            // optional, if not provided the default values set in the software will be used
+            config: {
+                setback: 2, // inch
+                buffer: 0.5, // inch
+                panel: {
+                    manufacturer: 'REC',
+                    dimensions: { length: 1821, width: 890 },
+                    degradation: 0.26, // %
+                    efficiency: 21.6, // %
+                    has_micro: false,
+                    model: 'REC400AA',
+                    power: 400,
+                },
+                inverter: {
+                    capacity: 10000,
+                    efficiency: 96.0, // %
+                    model: 'Enphase',
+                    type: 'Central', // 'Micro' | 'Central'
+                },
+                defaultBtnView: {
+                    ShadingSimulator: true,
+                    Ground: false,
+                    Trees: true,
+                    FireSetbacks: true,
+                    Panels: false,
+                    House: true,
+                    ShadingGradients: true,
+                    DSM: true,
+                    HouseDSM: true,
+                },
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
