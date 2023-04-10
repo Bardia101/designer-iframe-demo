@@ -80,7 +80,37 @@ function loadLead() {
     try {
         sendMessage({
             cmd: 'designer.LoadLead',
-            params: { uid }
+            params: { uid },
+            config: {
+                setback: 2, // inch
+                buffer: 0.5, // inch
+                panel: {
+                    manufacturer: 'REC',
+                    dimensions: { length: 1821, width: 890 },
+                    degradation: 0.26, // %
+                    efficiency: 21.6, // %
+                    has_micro: false,
+                    model: 'REC400AA',
+                    power: 400,
+                },
+                inverter: {
+                    capacity: 10000,
+                    efficiency: 96.0, // %
+                    model: 'Enphase',
+                    type: 'Central', // 'Micro' | 'Central'
+                },
+                defaultBtnView: {
+                    ShadingSimulator: true,
+                    Ground: false,
+                    Trees: true,
+                    FireSetbacks: true,
+                    Panels: false,
+                    House: true,
+                    ShadingGradients: true,
+                    DSM: true,
+                    HouseDSM: true,
+                },
+            }
         });
     } catch (err) {
         console.log(err);
